@@ -16,7 +16,7 @@ using namespace std;
 
 int tcp_open(uint32_t ip, uint16_t port)
 {
-    int fd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
+    int fd = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, IPPROTO_TCP);
     if (fd == -1) return -1;
     int nodelay   = 1; int reuseaddr = 1; int reuseport = 1;
     int keepalive = 1; int keepcnt   = 3; int keepidle  = 60; int keepintvl = 30;
@@ -48,9 +48,14 @@ int tcp_close(int fd)
     return close(fd);
 }
 
-int tcp_recv(int fd, uint8_t* buffer, uint32_t size)
+int tcp_recv(int fd, uint8_t* data, uint32_t size)
 {
-    return recv(fd, buffer, size, 0);
+    return recv(fd, data, size, 0);
+}
+
+int tcp_send(int fd, uint8_t* data, uint32_t size)
+{
+    return send(fd, data, size, 0);
 }
 
 int tcp_connect(int fd, uint32_t ip, uint16_t port)
