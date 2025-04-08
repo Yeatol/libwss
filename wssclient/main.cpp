@@ -134,7 +134,7 @@ bool websocket_cache(uint32_t bytes, uint8_t* to, uint8_t* from, uint32_t& offse
     }
 }
 
-void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
+void websocket_on_tcp_recved(int fd, SSL* ssl, uint8_t* bytes, uint32_t size)
 {
     static shared_ptr<websocket> d = make_shared<websocket>();
 
@@ -242,6 +242,9 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
                     return;
                 }
                 websocket_mask(d->key, d->frame.data(), d->frame.size());
+                uint32_t key = 0;
+                vector<uint8_t> pong = websocket_header(0, websocket_opcode_pong, true, key);
+                SSL_write(ssl, ()pong.data(), pong.size());
                 //websocket_send(socket, d->frame.data(), d->frame.size(), websocket_opcode_pong, true);
             }
 
@@ -284,7 +287,6 @@ int main()
         log_flush();
     }, 1000ms);
     
-
     // openssl s_client -connect testnet.binance.vision:443
     //string   host = "testnet.binance.vision";
     string   host = "stream.binance.com";
@@ -336,7 +338,7 @@ int main()
     cout << "send " << send_size << endl;
     
 
-    int busypoll = 1000 * 50;
+    int busypoll = 1000;
     setsockopt(fd, SOL_SOCKET, SO_BUSY_POLL, &busypoll, sizeof(int));
     fcntl(fd, F_SETFL, O_NONBLOCK);
 
@@ -356,7 +358,6 @@ int main()
         {
             cout << "SSL_read " << recv_size << endl;
             ERR_print_errors_fp(stdout);
-            //this_thread::sleep_for(1s);
             break;
         }
         if (recv_size > 0)
@@ -364,11 +365,7 @@ int main()
             static bool upgrade = false;
             if (upgrade)
             {
-                //auto tp = system_clock::now();
-                //auto ms = duration_cast<microseconds>(tp.time_since_epoch()).count();
-                //string line = "                         SSL_read_time=" + to_string(ms);
-                //log(line);
-                websocket_on_tcp_recved(fd, buff.data(), recv_size);
+                websocket_on_tcp_recved(fd, ssl, buff.data(), recv_size);
             }
             else
             {
