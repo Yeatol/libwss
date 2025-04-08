@@ -45,6 +45,48 @@ void websocket_on_recv_frame(int fd, uint8_t* frame, uint32_t size, bool binary)
     }
 }
 
+bool websocket_cache(uint32_t bytes, uint8_t* to, uint8_t* from, uint32_t& offset, uint32_t size, vector<uint8_t>& cache)
+{
+    uint32_t from_size = size - offset;
+
+    if (cache.empty())
+    {
+        if (from_size >= bytes)
+        {
+            memcpy(to, from + offset, bytes);
+            offset += bytes;
+            return true;
+        }
+        else
+        {
+            cache.resize(from_size);
+            memcpy(cache.data(), from + offset, from_size);
+            offset += from_size;
+            return false;
+        }
+    }
+    else
+    {
+        if (cache.size() + from_size >= bytes)
+        {
+            uint32_t read_size = bytes - cache.size();
+            memcpy(to, cache.data(), cache.size());
+            memcpy(to + cache.size(), from + offset, read_size);
+            offset += read_size;
+            cache.clear();
+            return true;
+        }
+        else
+        {
+            uint32_t old_size = cache.size();
+            cache.resize(old_size + from_size);
+            memcpy(cache.data() + old_size, from + offset, from_size);
+            offset += from_size;
+            return false;
+        }
+    }
+}
+
 void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
 {
     static shared_ptr<websocket> d = make_shared<websocket>();
@@ -65,7 +107,7 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
         if (d->opcode != websocket_opcode_continue && d->opcode != websocket_opcode_text && d->opcode != websocket_opcode_binary && d->opcode != websocket_opcode_close && d->opcode != websocket_opcode_ping && d->opcode != websocket_opcode_pong)
         {
             d->close_reason = "websocket unknown opcode " + to_string(d->opcode);
-            tcp_close(socket);
+            tcp_close(fd);
             return;
         }
 
@@ -98,7 +140,7 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
         if (d->server && d->sized && !d->mask)
         {
             d->close_reason = "websocket no mask";
-            tcp_close(socket);
+            tcp_close(fd);
             return;
         }
 
@@ -171,7 +213,7 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
             if (d->opcode == websocket_opcode_close)
             {
                 if (d->opcode == websocket_opcode_close) d->close_reason = "websocket close frame";
-                tcp_close(socket);
+                tcp_close(fd);
                 return;
             }
 
