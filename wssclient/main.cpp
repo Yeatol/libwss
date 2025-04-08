@@ -1,7 +1,7 @@
 #include "tcp.h"
 #include "websocket.h"
 
-#include "wolfssl/ssl.h"
+#include <wolfssl/ssl.h>
 
 #include <string>
 #include <vector>
@@ -25,6 +25,14 @@ int main()
 
     cout << "tcp_connect " << connect_code << endl;
 
+    wolfSSL_Init();
+    WOLFSSL_CTX* ctx = wolfSSL_CTX_new(wolfTLSv1_2_client_method());
+    WOLFSSL* ssl = wolfSSL_new(ctx);
+    wolfSSL_set_fd(ssl, fd);
+    int ssl_code = wolfSSL_connect(ssl);
+
+    cout << "wolfSSL_connect " << ssl_code << endl;
+
     string http_upgrade = websocket_upgrade(host, uri, websocket_key);
 
     int send_size = tcp_send(fd, (uint8_t*)http_upgrade.c_str(), http_upgrade.size());
@@ -43,6 +51,9 @@ int main()
 
         cout << respone << endl;
     }
+
+    wolfSSL_CTX_free(ctx);
+    wolfSSL_Cleanup();
 
     return 0;
 }
