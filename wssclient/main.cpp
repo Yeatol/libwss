@@ -341,8 +341,9 @@ int main()
     cout << "send " << send_size << endl;
     
 
-    int busypoll = 1000;
+    int busypoll = 1000 * 50;
     setsockopt(fd, SOL_SOCKET, SO_BUSY_POLL, &busypoll, sizeof(int));
+
     fcntl(fd, F_SETFL, O_NONBLOCK);
 
     vector<uint8_t> buff(1024 * 1024 * 4);
