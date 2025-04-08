@@ -147,6 +147,7 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
         {
             d->close_reason = "websocket unknown opcode " + to_string(d->opcode);
             cout << d->close_reason << endl;
+            tcp_close(fd);
             return;
         }
 
@@ -229,6 +230,7 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
                     if (d->frame.size() > 125) d->close_reason = "websocket too big ping frame";
                     if (!d->finish) d->close_reason = "websocket not finish ping frame";
                     cout << d->close_reason << endl;
+                    tcp_close(fd);
                     return;
                 }
                 websocket_mask(d->key, d->frame.data(), d->frame.size());
@@ -243,6 +245,7 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
             {
                 if (d->opcode == websocket_opcode_close) d->close_reason = "websocket close frame";
                 cout << d->close_reason << endl;
+                tcp_close(fd);
                 return;
             }
 
@@ -324,7 +327,7 @@ int main()
     int send_size = SSL_write(ssl, http_upgrade.c_str(), http_upgrade.size());
     cout << "send " << send_size << endl;
     
-    vector<uint8_t> buff(1024 * 1024 * 32);
+    vector<uint8_t> buff(1024 * 1024 * 4);
 
     while(true)
     {
