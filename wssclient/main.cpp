@@ -147,7 +147,7 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
             d->finish = x & 0x80;
             d->opcode = x & 0x7f;
             offset += sizeof(uint8_t);
-            continue;
+            //continue;
         }
 
         if (d->opcode != websocket_opcode_continue && d->opcode != websocket_opcode_text && d->opcode != websocket_opcode_binary && d->opcode != websocket_opcode_close && d->opcode != websocket_opcode_ping && d->opcode != websocket_opcode_pong)
@@ -165,7 +165,7 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
             d->size = x & 0x7f;
             d->sized = d->size <= 125;
             offset += sizeof(uint8_t);
-            continue;
+            //continue;
         }
 
         if (offset < size && d->size == 126 && !d->sized)
@@ -173,7 +173,7 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
             uint16_t x = 0;
             d->sized = websocket_cache(2, (uint8_t*)&x, bytes, offset, size, d->cache);
             if (d->sized) d->size = endian16(x);
-            continue;
+            //continue;
         }
 
         if (offset < size && d->size == 127 && !d->sized)
@@ -181,7 +181,7 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
             uint64_t x = 0;
             d->sized = websocket_cache(8, (uint8_t*)&x, bytes, offset, size, d->cache);
             if (d->sized) d->size = (uint32_t)endian64(x);
-            continue;
+            //continue;
         }
 
         if (offset < size && d->sized && d->mask && d->key == 0)
@@ -193,7 +193,7 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
             }
             else
             {
-                continue;
+                //continue;
             }
         }
 
@@ -294,14 +294,6 @@ int main()
 
     int fd = tcp_open(0, 0);
 
-    int rcvlowat = 0;
-    int rcvlowat_len = sizeof(int);
-    int ret = getsockopt(fd, SOL_SOCKET, SO_RCVLOWAT, &rcvlowat, (socklen_t*)&rcvlowat_len);
-    if (ret != -1)
-    {
-        cout << "rcvlowat " << rcvlowat << endl;
-    }
-    
     set_thread_affinity(0);
     set_socket_affinity(0, fd);
 
