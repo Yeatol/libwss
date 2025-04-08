@@ -32,8 +32,6 @@ int main()
 
     SSL_CTX* ctx = SSL_CTX_new(TLS_client_method());
     SSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, nullptr);
-    //SSL_CTX_set_min_proto_version(ctx, TLS1_2_VERSION);
-    //SSL_CTX_set_max_proto_version(ctx, TLS1_2_VERSION);
 
     SSL* ssl = SSL_new(ctx);
 
@@ -47,24 +45,23 @@ int main()
 
     if (ssl_code <= 0)
     {
-        cout << "errno " << errno << endl; 
-        cout << "SSL_get_error " << SSL_get_error(ssl, ssl_code) << endl;
         ERR_print_errors_fp(stdout);
     }
 
     string http_upgrade = websocket_upgrade(host, uri, websocket_key);
 
-    int send_size = tcp_send(fd, (uint8_t*)http_upgrade.c_str(), http_upgrade.size());
-
-    cout << "tcp_send " << send_size << endl;
+    //int send_size = tcp_send(fd, (uint8_t*)http_upgrade.c_str(), http_upgrade.size());
+    int send_size = SSL_write(ssl, http_upgrade.c_str(), http_upgrade.size());
+    cout << "send " << send_size << endl;
     
     vector<uint8_t> buff(1024 * 1024);
 
     //while(true)
     {
-        int recv_size = tcp_recv(fd, buff.data(), buff.size());
-
-        cout << "tcp_recv " << recv_size << endl;
+        //int recv_size = tcp_recv(fd, buff.data(), buff.size());
+        //cout << "tcp_recv " << recv_size << endl;
+        int recv_size = SSL_read(ssl, buff.data(), buff.size());
+        cout << "recv " << recv_size << endl;
 
         string respone((char*)buff.data(), recv_size);
 
