@@ -339,6 +339,13 @@ int main()
     while(true)
     {
         int recv_size = SSL_read(ssl, buff.data(), buff.size());
+        if (recv_size == -1)
+        {
+            if (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK)
+            {
+                continue;
+            }
+        }
         if (recv_size <= 0)
         {
             cout << "SSL_read " << recv_size << endl;
