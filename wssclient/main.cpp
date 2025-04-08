@@ -298,6 +298,8 @@ int main()
     SSL_CTX* ctx = SSL_CTX_new(TLS_client_method());
     SSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, nullptr);
 
+    //SSL_CTX_set_cipher_list(ctx, "ECDHE-RSA-AES128-GCM-SHA256")
+
     SSL* ssl = SSL_new(ctx);
 
     SSL_set_tlsext_host_name(ssl, host.c_str());
