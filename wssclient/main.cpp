@@ -68,9 +68,12 @@ int main()
     
     vector<uint8_t> buff(1024 * 1024);
 
-    int recv_size = tcp_recv(fd, buff.data(), buff.size());
+    while(true)
+    {
+        int recv_size = tcp_recv(fd, buff.data(), buff.size());
 
-    cout << recv_size << endl;
+        cout << "tcp_recv " << recv_size << endl;
+    }
 
     return 0;
 }
