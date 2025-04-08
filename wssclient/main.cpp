@@ -382,7 +382,7 @@ int main()
                 cout << http_respone << endl;
                 upgrade = true;
 
-                daemon(1, 0);
+                //daemon(1, 0);
             }
         }
     }
