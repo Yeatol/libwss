@@ -8,10 +8,13 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <thread>
+#include <chrono>
 #include <stdint.h>
 #include <iostream>
 
 using namespace std;
+using namespace std::chrono;
 
 static const uint8_t websocket_opcode_continue = 0;
 static const uint8_t websocket_opcode_text     = 1;
@@ -283,9 +286,12 @@ int main()
         {
             cout << "SSL_read " << recv_size << endl;
             ERR_print_errors_fp(stdout);
-            break;
+            this_thread::sleep_for(1s);
         }
-        websocket_on_tcp_recved(fd, buff.data(), recv_size);
+        if (recv_size > 0)
+        {
+            websocket_on_tcp_recved(fd, buff.data(), recv_size);
+        }
     }
 
     tcp_close(fd);
