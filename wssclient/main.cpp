@@ -56,7 +56,7 @@ void websocket_on_recv_frame(int fd, uint8_t* frame, uint32_t size, bool binary)
 
         uint64_t id = (uint64_t)object["data"]["u"].number_value();
         
-        string line = "cpp_recvTimeUs=" + to_string(ms) + "    updateId=" + to_string(id);
+        string line = "updateId=" + to_string(id)  + "    cpp_recvTimeUs=" + to_string(ms);
 
         //cout << line << endl;
         log(line);
@@ -247,7 +247,7 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
 int main()
 {
     async_task_interval([]() {
-        log_flush("debug.log");
+        log_flush();
     }, 1000ms);
 
     // openssl s_client -connect testnet.binance.vision:443

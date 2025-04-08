@@ -30,7 +30,7 @@ string log_time()
     return string(bytes.data());
 }
 
-void log_flush(string filename)
+void log_flush()
 {
     lock_guard<mutex> guard(log_lock);
     if (!log_lines.empty())
@@ -38,12 +38,12 @@ void log_flush(string filename)
         auto tp = system_clock::now();
         auto tm = system_clock::to_time_t(tp);
         struct tm* d = localtime(&tm);
-        vector<char> buff(1024);
+        vector<char> filename(1024);
         error_code ec;
         string path = "%04d%02d%02d%02d.log";
-        sprintf(buff.data(), path.c_str(), (int)d->tm_year + 1900, (int)d->tm_mon + 1, (int)d->tm_mday, (int)d->tm_hour);
-        if (filename.empty()) filename = string(buff.data(), buff.size());
-        ofstream fs(filename.c_str(), ios::app);
+        sprintf(filename.data(), path.c_str(), (int)d->tm_year + 1900, (int)d->tm_mon + 1, (int)d->tm_mday, (int)d->tm_hour);
+        //ofstream fs(filename.data(), ios::app);
+        ofstream fs("debug.log", ios::app);
         if (fs.is_open())
         {
             fs.write(log_lines.data(), log_lines.size());
@@ -89,7 +89,8 @@ string log_tail()
 void log(string line)
 {
     lock_guard<mutex> guard(log_lock);
-    line = log_time() + "|" + line + "\r\n";
+    //line = log_time() + "|" + line + "\r\n";
+    line += "\n";
     log_tails.push_back(line);
     if (log_tails.size() > 89) log_tails.pop_front();
     log_lines += line;
