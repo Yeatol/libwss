@@ -28,9 +28,10 @@ SSL_CTX* create_context()
     const SSL_METHOD* method;
     SSL_CTX* ctx;
 
-    method = TLS_client_method();
+    method = DTLS_client_method();
     ctx = SSL_CTX_new(method);
-    if (!ctx) {
+    if (!ctx)
+    {
         perror("Unable to create SSL context");
         ERR_print_errors_fp(stderr);
         exit(EXIT_FAILURE);
