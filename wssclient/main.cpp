@@ -31,7 +31,7 @@ int main()
 
     SSL_CTX* ctx = SSL_CTX_new(DTLS_client_method());
     SSL* ssl = SSL_new(ctx);
-    SSL_set_fd(ssl, sock);
+    SSL_set_fd(ssl, fd);
     int ssl_code = SSL_connect(ssl);
 
     cout << "SSL_connect " << ssl_code << endl;
