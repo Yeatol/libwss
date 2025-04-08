@@ -62,7 +62,7 @@ int main()
     if (ssl_code <= 0)
     {
         ERR_print_errors_fp(stderr);
-        close(socket_fd);
+        tcp_close(fd);
         SSL_free(ssl);
         SSL_CTX_free(ctx);
         cleanup_openssl();
