@@ -296,7 +296,7 @@ int main()
 
     int rcvlowat = 0;
     int rcvlowat_len = sizeof(int);
-    int ret = getsockopt(fd, SOL_SOCKET, SO_RCVLOWAT, &rcvlowat, &rcvlowat_len);
+    int ret = getsockopt(fd, SOL_SOCKET, SO_RCVLOWAT, &rcvlowat, (socklen_t*)&rcvlowat_len);
     if (ret != -1)
     {
         cout << "rcvlowat " << rcvlowat << endl;
