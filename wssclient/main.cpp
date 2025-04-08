@@ -59,7 +59,7 @@ int main()
     int ssl_code = SSL_connect(ssl);
     if (ssl_code <= 0)
     {
-        ERR_print_errors_fp(stdout);
+        cout << SSL_get_error(ssl, ssl_code) << endl;
     }
 
     cout << "SSL_connect " << ssl_code << endl;
