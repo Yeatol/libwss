@@ -25,7 +25,6 @@ static const uint8_t websocket_opcode_pong     = 10;
 
 struct websocket
 {
-    bool server = false;
     bool mask = false;
     bool sized = false;
     bool finish = false;
@@ -154,14 +153,14 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
             continue;
         }
 
-        if (d->server && d->sized && !d->mask)
+        if (d->sized && !d->mask)
         {
             d->close_reason = "websocket no mask";
             tcp_close(fd);
             return;
         }
 
-        if (offset < size && d->server && d->sized && d->mask && d->key == 0)
+        if (offset < size && d->sized && d->mask && d->key == 0)
         {
             uint32_t x = 0;
             if (websocket_cache(4, (uint8_t*)&x, bytes, offset, size, d->cache))
