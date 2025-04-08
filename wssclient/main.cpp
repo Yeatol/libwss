@@ -335,8 +335,10 @@ int main()
     int send_size = SSL_write(ssl, http_upgrade.c_str(), http_upgrade.size());
     cout << "send " << send_size << endl;
     
-    int ret = fcntl(fd, F_SETFL, O_NONBLOCK);
-    cout << "fcntl " << ret << endl;
+
+    int busypoll = 1;
+    setsockopt(fd, SOL_SOCKET, SO_BUSY_POLL, &busypoll, sizeof(int));
+    //fcntl(fd, F_SETFL, O_NONBLOCK);
 
     vector<uint8_t> buff(1024 * 1024 * 4);
 
