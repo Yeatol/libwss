@@ -43,7 +43,11 @@ void websocket_on_recv_frame(int fd, uint8_t* frame, uint32_t size, bool binary)
     if (!binary)
     {
         string text((char*)frame, size);
-        cout << text << endl;
+
+        auto tp = system_clock::now();
+        auto ms = duration_cast<microseconds>(tp.time_since_epoch()).count();
+
+        cout << ms << " | " << text << endl;
     }
 }
 
