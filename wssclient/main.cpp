@@ -45,6 +45,20 @@ void websocket_on_recv_frame(int fd, uint8_t* frame, uint32_t size, bool binary)
     }
 }
 
+void websocket_mask(uint32_t key, uint8_t* bytes, uint32_t size)
+{
+    if (key != 0)
+    {
+        for(uint32_t i = 0; i < size; ++i)
+        {
+            uint32_t index = i % sizeof(key);
+            uint8_t* p = (uint8_t*)&key;
+            uint8_t mask = *(p + index);
+            bytes[i] = bytes[i] ^ mask;
+        }
+    }
+}
+
 bool websocket_cache(uint32_t bytes, uint8_t* to, uint8_t* from, uint32_t& offset, uint32_t size, vector<uint8_t>& cache)
 {
     uint32_t from_size = size - offset;
@@ -165,8 +179,6 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
 
         if (d->sized && d->size == d->frame.size())
         {
-            websocket_recv_frame++;
-
             if (!d->finish && (d->opcode == websocket_opcode_text || d->opcode == websocket_opcode_binary))
             {
                 websocket_mask(d->key, d->frame.data(), d->frame.size());
@@ -194,7 +206,6 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
 
             if (d->opcode == websocket_opcode_ping)
             {
-                websocket_send_frame++;
                 if (!d->finish || d->frame.size() > 125)
                 {
                     if (d->frame.size() > 125) d->close_reason = "websocket too big ping frame";
