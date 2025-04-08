@@ -30,7 +30,7 @@ int main()
     SSL_load_error_strings();
     OpenSSL_add_ssl_algorithms();
 
-    SSL_CTX* ctx = SSL_CTX_new(TLS_client_method());
+    SSL_CTX* ctx = SSL_CTX_new(DTLS_client_method());
     SSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, nullptr);
     SSL_CTX_set_min_proto_version(ctx, TLS1_VERSION);
 
