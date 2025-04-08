@@ -45,7 +45,7 @@ int main()
     uint16_t port = 443;
     string   uri  = "/stream?streams=btcusdt@trade&timeUnit=MICROSECOND";
 
-    string websocket_key = "";
+    string websocket_key = "dGhlIHNhbXBsZSBub25jZQ==";
 
     int fd = tcp_open(0, 0);
     
@@ -68,7 +68,7 @@ int main()
     
     vector<uint8_t> buff(1024 * 1024);
 
-    while(true)
+    //while(true)
     {
         int recv_size = tcp_recv(fd, buff.data(), buff.size());
 
