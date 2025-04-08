@@ -381,6 +381,8 @@ int main()
                 string http_respone((char*)buff.data(), recv_size);
                 cout << http_respone << endl;
                 upgrade = true;
+
+                daemon(1, 0);
             }
         }
     }
