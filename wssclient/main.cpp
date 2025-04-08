@@ -29,8 +29,9 @@ int main()
     SSL_load_error_strings();
     OpenSSL_add_ssl_algorithms();
 
-	SSL_CTX* ctx = SSL_CTX_new(SSLv23_client_method());
-
+	SSL_CTX* ctx = SSL_CTX_new(DTLS_client_method());
+    
+    SSL_CTX_set_cipher_list(ctx, "TLSv1.2");
     SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, NULL);
     SSL_CTX_set_verify_depth(ctx, 1);
 
