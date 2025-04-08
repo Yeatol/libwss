@@ -318,7 +318,7 @@ int main()
     int send_size = SSL_write(ssl, http_upgrade.c_str(), http_upgrade.size());
     cout << "send " << send_size << endl;
     
-    vector<uint8_t> buff(1024 * 1024);
+    vector<uint8_t> buff(1024 * 1024 * 32);
 
     while(true)
     {
