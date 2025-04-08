@@ -39,9 +39,14 @@ int main()
     
     int ssl_code = SSL_connect(ssl);
 
-    cout << "errno " << errno << endl; 
     cout << "SSL_connect " << ssl_code << endl;
-    cout << "SSL_get_error " << SSL_get_error(ssl, ssl_code) << endl;
+
+    if (ssl_code <= 0)
+    {
+        cout << "errno " << errno << endl; 
+        cout << "SSL_get_error " << SSL_get_error(ssl, ssl_code) << endl;
+        ERR_print_errors_fp(stdout);
+    }
 
     string http_upgrade = websocket_upgrade(host, uri, websocket_key);
 
