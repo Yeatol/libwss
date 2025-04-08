@@ -210,11 +210,11 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
                 {
                     if (d->frame.size() > 125) d->close_reason = "websocket too big ping frame";
                     if (!d->finish) d->close_reason = "websocket not finish ping frame";
-                    tcp_close(socket);
+                    tcp_close(fd);
                     return;
                 }
                 websocket_mask(d->key, d->frame.data(), d->frame.size());
-                websocket_send(socket, d->frame.data(), d->frame.size(), websocket_opcode_pong, true);
+                //websocket_send(socket, d->frame.data(), d->frame.size(), websocket_opcode_pong, true);
             }
 
             if (d->opcode == websocket_opcode_pong)
@@ -280,7 +280,7 @@ int main()
     {
         int recv_size = SSL_read(ssl, buff.data(), buff.size());
         if (recv_size <= 0) break;
-        websocket_on_tcp_recved(buff.data(), buff.size());
+        websocket_on_tcp_recved(fd, buff.data(), recv_size);
     }
 
     tcp_close(fd);
