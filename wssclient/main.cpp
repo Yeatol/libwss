@@ -242,10 +242,12 @@ void websocket_on_tcp_recved(int fd, SSL* ssl, uint8_t* bytes, uint32_t size)
                     return;
                 }
                 websocket_mask(d->key, d->frame.data(), d->frame.size());
-                uint32_t key = 0;
-                vector<uint8_t> pong = websocket_header(0, websocket_opcode_pong, true, key);
+                cout << "websocket ping " << d->frame.size() << endl;
+
+                vector<uint8_t> pong = websocket_header(d->frame.size(), websocket_opcode_pong, true, d->key);
+                for(auto i : d->frame) pong.push_back(i);
                 int ssl_code = SSL_write(ssl, pong.data(), pong.size());
-                cout << "websocket ping-pong " << pong.size() << " " << ssl_code << endl;
+                cout << "websocket pong " << pong.size() << " " << ssl_code << endl;
                 //websocket_send(socket, d->frame.data(), d->frame.size(), websocket_opcode_pong, true);
             }
 
