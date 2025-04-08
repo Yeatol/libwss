@@ -299,7 +299,8 @@ int main()
         {
             cout << "SSL_read " << recv_size << endl;
             ERR_print_errors_fp(stdout);
-            this_thread::sleep_for(1s);
+            //this_thread::sleep_for(1s);
+            break;
         }
         if (recv_size > 0)
         {
