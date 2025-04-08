@@ -244,7 +244,7 @@ void websocket_on_tcp_recved(int fd, SSL* ssl, uint8_t* bytes, uint32_t size)
                 websocket_mask(d->key, d->frame.data(), d->frame.size());
                 uint32_t key = 0;
                 vector<uint8_t> pong = websocket_header(0, websocket_opcode_pong, true, key);
-                SSL_write(ssl, ()pong.data(), pong.size());
+                SSL_write(ssl, pong.data(), pong.size());
                 //websocket_send(socket, d->frame.data(), d->frame.size(), websocket_opcode_pong, true);
             }
 
