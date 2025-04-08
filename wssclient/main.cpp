@@ -1,5 +1,7 @@
 #include "tcp.h"
+#include "log.h"
 #include "json.h"
+#include "task.h"
 #include "endian.h"
 #include "websocket.h"
 
@@ -52,18 +54,12 @@ void websocket_on_recv_frame(int fd, uint8_t* frame, uint32_t size, bool binary)
 
         json object = json::parse(text);
 
-        //string id = object["data"]["u"].to_string();
+        uint64_t id = (uint64_t)object["data"]["u"].number_value();
         
-        //cout << "recvTimeUs=" << ms << "    updateId=" << id  << " " << text << endl;
-        //cout << ms << " | " << text << endl;
-        string line = to_string(ms) + " | " + text + "\n";
+        string line = "recvTimeUs=" + to_string(ms) + "    updateId=" + to_string(id);
 
-        ofstream fs("debug.log", ios::app);
-        if (fs.is_open())
-        {
-            fs.write(line.data(), line.size());
-            fs.close();
-        }
+        cout << line << endl;
+        //log(line);
     }
 }
 
