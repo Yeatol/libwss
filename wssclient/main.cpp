@@ -9,6 +9,13 @@
 #include <openssl/err.h>
 
 #include <sched.h>
+#include <unistd.h>
+#include <signal.h>
+#include <sys/epoll.h>
+#include <sys/timerfd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/syscall.h>
 
 #include <string>
 #include <vector>
