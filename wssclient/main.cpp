@@ -344,8 +344,8 @@ int main()
     cout << "send " << send_size << endl;
     
 
-    //int busypoll = 1000 * 10;
-    //setsockopt(fd, SOL_SOCKET, SO_BUSY_POLL, &busypoll, sizeof(int));
+    int busypoll = 50;
+    setsockopt(fd, SOL_SOCKET, SO_BUSY_POLL, &busypoll, sizeof(int));
 
     fcntl(fd, F_SETFL, O_NONBLOCK);
 
