@@ -1,8 +1,8 @@
 #include "tcp.h"
 #include "websocket.h"
 
-#include <wolfssl/options.h>
-#include <wolfssl/ssl.h>
+#include <openssl/ssl.h>
+#include <openssl/err.h>
 
 #include <string>
 #include <vector>
@@ -10,10 +10,7 @@
 #include <stdint.h>
 #include <iostream>
 
-using std::endl;
-using std::cout;
-using std::string;
-using std::vector;
+using namespace std;
 
 int main()
 {
@@ -29,13 +26,15 @@ int main()
 
     cout << "tcp_connect " << connect_code << endl;
 
-    wolfSSL_Init();
-    WOLFSSL_CTX* ctx = wolfSSL_CTX_new(wolfTLSv1_2_client_method());
-    WOLFSSL* ssl = wolfSSL_new(ctx);
-    wolfSSL_set_fd(ssl, fd);
-    int ssl_code = wolfSSL_connect(ssl);
+    SSL_load_error_strings();
+    OpenSSL_add_ssl_algorithms();
 
-    cout << "wolfSSL_connect " << ssl_code << endl;
+    SSL_CTX* ctx = SSL_CTX_new(DTLS_client_method());
+    SSL* ssl = SSL_new(ctx);
+    SSL_set_fd(ssl, sock);
+    int ssl_code = SSL_connect(ssl);
+
+    cout << "SSL_connect " << ssl_code << endl;
 
     string http_upgrade = websocket_upgrade(host, uri, websocket_key);
 
@@ -56,8 +55,10 @@ int main()
         cout << respone << endl;
     }
 
-    wolfSSL_CTX_free(ctx);
-    wolfSSL_Cleanup();
+    tcp_close(fd);
+    SSL_free(ssl);
+    SSL_CTX_free(ctx);
+    EVP_cleanup();
 
     return 0;
 }
