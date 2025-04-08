@@ -8,6 +8,8 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
+#include <sched.h>
+
 #include <string>
 #include <vector>
 #include <memory>
@@ -244,11 +246,28 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
     }
 }
 
+void set_thread_affinity(int cpuid)
+{
+    cpu_set_t mask;
+    CPU_ZERO(&mask);
+    CPU_SET(cpuid, &mask);
+    sched_setaffinity(0, sizeof(cpu_set_t), &mask);
+}
+
+void set_socket_affinity(int cpuid, int fd)
+{
+#include <linux/version.h>
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,4,0)
+    setsockopt(fd, SOL_SOCKET, SO_INCOMING_CPU, &cpuid, sizeof(cpuid));
+#endif
+}
+
 int main()
 {
     async_task_interval([]() {
         log_flush();
     }, 1000ms);
+    
 
     // openssl s_client -connect testnet.binance.vision:443
     //string   host = "testnet.binance.vision";
@@ -259,6 +278,10 @@ int main()
     string websocket_key = "ZDjAIhP1CSBvruG9uw820A==";
 
     int fd = tcp_open(0, 0);
+    
+    set_thread_affinity(0);
+    set_socket_affinity(0, fd);
+
     
     int connect_code = tcp_connect(fd, host.c_str(), port);
 
