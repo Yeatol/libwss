@@ -38,6 +38,7 @@ int main()
 
     SSL* ssl = SSL_new(ctx);
     SSL_set_fd(ssl, fd);
+    SSL_set_tlsext_host_name(ssl, host);
 
     int ssl_code = SSL_connect(ssl);
     if (ssl_code <= 0)
@@ -53,17 +54,17 @@ int main()
 
     string http_upgrade = websocket_upgrade(host, uri, websocket_key);
 
-    int send_size = tcp_send(fd, (uint8_t*)http_upgrade.c_str(), http_upgrade.size());
+    int write_size = SSL_write(ssl, http_upgrade.c_str(), http_upgrade.size());
 
-    cout << "tcp_send " << send_size << endl;
+    cout << "SSL_write " << write_size << endl;
     
     vector<uint8_t> buff(1024 * 1024);
 
     //while(true)
     {
-        int recv_size = tcp_recv(fd, buff.data(), buff.size());
+        int read_size = SSL_read(ssl, buff.data(), buff.size());
 
-        cout << "tcp_recv " << recv_size << endl;
+        cout << "SSL_read " << read_size << endl;
     }
 
     return 0;
