@@ -243,7 +243,7 @@ int main()
     //string   host = "testnet.binance.vision";
     string   host = "stream.binance.com";
     uint16_t port = 443;
-    string   uri  = "/stream?streams=btcusdt@trade&timeUnit=MICROSECOND";
+    string   uri  = "/stream?streams=btcusdt@ticker&timeUnit=MICROSECOND";
 
     string websocket_key = "ZDjAIhP1CSBvruG9uw820A==";
 
