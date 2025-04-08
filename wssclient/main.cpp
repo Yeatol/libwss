@@ -334,13 +334,13 @@ int main()
     }
 
     const SSL_CIPHER* cipher = SSL_get_current_cipher(ssl);
-    cout << "Connected using cipher: " << SSL_CIPHER_get_name(cipher) << endl;
+    cout << "SSL_cipher: " << SSL_CIPHER_get_name(cipher) << endl;
 
 
     string http_upgrade = websocket_upgrade(host, uri, websocket_key);
 
-    int send_size = SSL_write(ssl, http_upgrade.c_str(), http_upgrade.size());
-    cout << "send " << send_size << endl;
+    SSL_write(ssl, http_upgrade.c_str(), http_upgrade.size());
+    cout << http_upgrade << endl;
     
 
     //int busypoll = 50;
