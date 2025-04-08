@@ -60,11 +60,11 @@ int main()
 
     cout << "SSL_connect " << ssl_code << endl;
 
-    string http_upgrade = websocket_upgrade(host, uri, websocket_key);
+    //string http_upgrade = websocket_upgrade(host, uri, websocket_key);
 
-    int send_size = tcp_send(fd, (uint8_t*)http_upgrade.c_str(), http_upgrade.size());
+    //int send_size = tcp_send(fd, (uint8_t*)http_upgrade.c_str(), http_upgrade.size());
 
-    cout << "tcp_send " << send_size << endl;
+    //cout << "tcp_send " << send_size << endl;
     
     vector<uint8_t> buff(1024 * 1024);
 
