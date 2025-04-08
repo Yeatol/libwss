@@ -1,4 +1,5 @@
 #include "tcp.h"
+#include "json.h"
 #include "endian.h"
 #include "websocket.h"
 
@@ -47,7 +48,11 @@ void websocket_on_recv_frame(int fd, uint8_t* frame, uint32_t size, bool binary)
         auto tp = system_clock::now();
         auto ms = duration_cast<microseconds>(tp.time_since_epoch()).count();
 
-        cout << ms << " | " << text << endl;
+        json object = json::parse(text);
+
+        int event_time = object["data"]["E"].int_value();
+
+        cout << ms << " | " << text << " | " << ms - event_time << endl;
     }
 }
 
