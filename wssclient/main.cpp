@@ -153,7 +153,7 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
             continue;
         }
 
-        if (offset < size && d->sized && d->key == 0)
+        if (offset < size && d->sized && d->mask && d->key == 0)
         {
             uint32_t x = 0;
             if (websocket_cache(4, (uint8_t*)&x, bytes, offset, size, d->cache))
