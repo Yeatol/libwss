@@ -36,6 +36,8 @@ int main()
     SSL_CTX_set_max_proto_version(ctx, TLS1_2_VERSION);
 
     SSL* ssl = SSL_new(ctx);
+
+    SSL_set_tlsext_host_name(ssl, host.c_str());
     
     SSL_set_fd(ssl, fd);
     
