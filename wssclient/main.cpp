@@ -282,6 +282,7 @@ int main()
         if (recv_size <= 0)
         {
             cout << "SSL_read " << recv_size << endl;
+            ERR_print_errors_fp(stdout);
             break;
         }
         websocket_on_tcp_recved(fd, buff.data(), recv_size);
