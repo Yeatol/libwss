@@ -42,7 +42,7 @@ void log_flush(string filename)
         error_code ec;
         string path = "%04d%02d%02d%02d.log";
         sprintf(buff.data(), path.c_str(), (int)d->tm_year + 1900, (int)d->tm_mon + 1, (int)d->tm_mday, (int)d->tm_hour);
-        if filename.empty() filename = string(buff.data, buff.size());
+        if (filename.empty()) filename = string(buff.data, buff.size());
         ofstream fs(filename.c_str(), ios::app);
         if (fs.is_open())
         {
