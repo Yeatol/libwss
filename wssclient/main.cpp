@@ -33,7 +33,7 @@ int main()
 
     //while(true)
     {
-        int recv_size = tcp_recv(ssl, buff.data(), buff.size());
+        int recv_size = tcp_recv(fd, buff.data(), buff.size());
 
         cout << "tcp_recv " << recv_size << endl;
     }
