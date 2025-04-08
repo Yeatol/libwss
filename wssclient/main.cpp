@@ -1,5 +1,4 @@
 #include "tcp.h"
-#include "http.h"
 #include "websocket.h"
 
 #include <string>

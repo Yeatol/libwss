@@ -86,7 +86,7 @@ int tcp_connect(int fd, const char* domain, uint16_t port)
         if (p->ai_family == AF_INET)
         {
             sockaddr_in* ipv4 = (sockaddr_in*)p->ai_addr;
-            ip = htonl(ipv4->sin_addr);
+            ip = htonl(ipv4->sin_addr.s_addr);
             break;
         }
     }
