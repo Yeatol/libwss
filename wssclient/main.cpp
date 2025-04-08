@@ -1,12 +1,43 @@
 #include "tcp.h"
 #include "websocket.h"
 
+#include <openssl/ssl.h>
+#include <openssl/err.h>
+
 #include <string>
 #include <vector>
+#include <memory>
 #include <stdint.h>
 #include <iostream>
 
 using namespace std;
+
+struct openssl_context
+{
+    SSL_CTX* ctx = nullptr;
+
+    openssl_context()
+    {
+        SSL_load_error_strings();
+        OpenSSL_add_ssl_algorithms();
+        ctx = SSL_CTX_new(TLS_client_method());
+    }
+
+    ~openssl_context()
+    {
+        EVP_cleanup();
+    }
+};
+
+shared_ptr<openssl_context> shared_context()
+{
+    static shared_ptr<openssl_context> context;
+    if (!context)
+    {
+        context = make_shared<openssl_context>();
+    }
+    return context;
+}
 
 int main()
 {
@@ -21,6 +52,13 @@ int main()
     int connect_code = tcp_connect(fd, host.c_str(), port);
 
     cout << "tcp_connect " << connect_code << endl;
+
+    SSL* ssl = SSL_new(shared_context()->ctx);
+    SSL_set_fd(ssl, fd);
+
+    int ssl_code = SSL_connect(ssl);
+
+    cout << "SSL_connect " << ssl_code << endl;
 
     string http_upgrade = websocket_upgrade(host, uri, websocket_key);
 
