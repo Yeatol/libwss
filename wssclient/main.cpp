@@ -123,7 +123,7 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
         if (d->opcode != websocket_opcode_continue && d->opcode != websocket_opcode_text && d->opcode != websocket_opcode_binary && d->opcode != websocket_opcode_close && d->opcode != websocket_opcode_ping && d->opcode != websocket_opcode_pong)
         {
             d->close_reason = "websocket unknown opcode " + to_string(d->opcode);
-            tcp_close(fd);
+            cout << d->close_reason << endl;
             return;
         }
 
@@ -156,7 +156,7 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
         if (d->sized && !d->mask)
         {
             d->close_reason = "websocket no mask";
-            tcp_close(fd);
+            cout << d->close_reason << endl;
             return;
         }
 
@@ -212,7 +212,7 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
                 {
                     if (d->frame.size() > 125) d->close_reason = "websocket too big ping frame";
                     if (!d->finish) d->close_reason = "websocket not finish ping frame";
-                    tcp_close(fd);
+                    cout << d->close_reason << endl;
                     return;
                 }
                 websocket_mask(d->key, d->frame.data(), d->frame.size());
@@ -226,7 +226,7 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
             if (d->opcode == websocket_opcode_close)
             {
                 if (d->opcode == websocket_opcode_close) d->close_reason = "websocket close frame";
-                tcp_close(fd);
+                cout << d->close_reason << endl;
                 return;
             }
 
