@@ -52,7 +52,7 @@ void websocket_on_recv_frame(int fd, uint8_t* frame, uint32_t size, bool binary)
 
         int event_time = object["data"]["E"].int_value();
 
-        cout << ms << " | " << text << " | " << ms - event_time << endl;
+        cout << ms << " | " << text << " | " << event_time << endl;
     }
 }
 
