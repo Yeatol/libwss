@@ -279,7 +279,11 @@ int main()
     while(true)
     {
         int recv_size = SSL_read(ssl, buff.data(), buff.size());
-        if (recv_size <= 0) break;
+        if (recv_size <= 0)
+        {
+            cout << "SSL_read " << recv_size << endl;
+            break;
+        }
         websocket_on_tcp_recved(fd, buff.data(), recv_size);
     }
 
