@@ -14,6 +14,7 @@ using namespace std;
 
 int main()
 {
+    // openssl s_client -connect testnet.binance.vision:443
     string   host = "testnet.binance.vision";
     uint16_t port = 443;
     string   uri  = "/stream?streams=btcusdt@trade&timeUnit=MICROSECOND";
@@ -29,9 +30,13 @@ int main()
     SSL_load_error_strings();
     OpenSSL_add_ssl_algorithms();
 
-    SSL_CTX* ctx = SSL_CTX_new(DTLS_client_method());
+    SSL_CTX* ctx = SSL_CTX_new(TLS_client_method());
+    SSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, nullptr);
+
     SSL* ssl = SSL_new(ctx);
+    
     SSL_set_fd(ssl, fd);
+    
     int ssl_code = SSL_connect(ssl);
 
     cout << "errno " << errno << endl; 
