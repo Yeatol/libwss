@@ -1,6 +1,8 @@
 #include "tcp.h"
 #include "websocket.h"
 
+#include "wolfssl/ssl.h"
+
 #include <string>
 #include <vector>
 #include <memory>
