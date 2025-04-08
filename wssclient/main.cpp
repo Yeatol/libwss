@@ -38,7 +38,7 @@ int main()
 
     SSL* ssl = SSL_new(ctx);
     SSL_set_fd(ssl, fd);
-    SSL_set_tlsext_host_name(ssl, host);
+    SSL_set_tlsext_host_name(ssl, host.c_str());
 
     int ssl_code = SSL_connect(ssl);
     if (ssl_code <= 0)
