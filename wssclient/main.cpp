@@ -34,6 +34,7 @@ int main()
     SSL_set_fd(ssl, fd);
     int ssl_code = SSL_connect(ssl);
 
+    cout << "errno " << errno << endl; 
     cout << "SSL_connect " << ssl_code << endl;
     cout << "SSL_get_error " << SSL_get_error(ssl, ssl_code) << endl;
 
