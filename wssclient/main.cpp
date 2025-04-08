@@ -26,11 +26,13 @@ int main()
 
     cout << "tcp_connect " << connect_code << endl;
 
-	OpenSSL_add_ssl_algorithms();
-	SSL_load_error_strings(); 
-	SSLeay_add_ssl_algorithms();
-	ERR_load_BIO_strings();
-	SSL_CTX* ctx = SSL_CTX_new(SSLv3_client_method());
+    SSL_load_error_strings();
+    OpenSSL_add_ssl_algorithms();
+
+	SSL_CTX* ctx = SSL_CTX_new(SSLv23_client_method());
+
+    SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, NULL);
+    SSL_CTX_set_verify_depth(ctx, 1);
 
 	if (ctx == nullptr)
     {
