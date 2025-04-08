@@ -13,7 +13,7 @@
 #include <chrono>
 #include <stdint.h>
 #include <iostream>
-#include <filesystem>
+#include <fstream>
 
 using namespace std;
 using namespace std::chrono;
@@ -58,7 +58,7 @@ void websocket_on_recv_frame(int fd, uint8_t* frame, uint32_t size, bool binary)
         //cout << ms << " | " << text << endl;
         string line = to_string(ms) + " | " + text + "\n";
 
-        ofstream fs(string("debug.log"), ios::app);
+        ofstream fs("debug.log", ios::app);
         if (fs.is_open())
         {
             fs.write(line.data(), line.size());
