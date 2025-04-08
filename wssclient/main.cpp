@@ -30,7 +30,7 @@ int main()
 	SSL_load_error_strings(); 
 	SSLeay_add_ssl_algorithms();
 	ERR_load_BIO_strings();
-	SSL_CTX* ctx = SSL_CTX_new(SSLv2_client_method());
+	SSL_CTX* ctx = SSL_CTX_new(SSLv3_client_method());
 
 	if (ctx == nullptr)
     {
