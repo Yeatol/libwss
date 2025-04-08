@@ -9,7 +9,8 @@
 #include <stdint.h>
 #include <iostream>
 
-using namespace std;
+using std::endl;
+using std::cout;
 
 int main()
 {

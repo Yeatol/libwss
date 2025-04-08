@@ -2,6 +2,4 @@
 
 #include <string>
 
-using namespace std;
-
-string websocket_upgrade(string host, string uri, string key);
+std::string websocket_upgrade(std::string host, std::string uri, std::string key);
