@@ -1,4 +1,5 @@
 #include "tcp.h"
+#include "endian.h"
 #include "websocket.h"
 
 #include <openssl/ssl.h>
@@ -11,6 +12,173 @@
 #include <iostream>
 
 using namespace std;
+
+static const uint8_t websocket_opcode_continue = 0;
+static const uint8_t websocket_opcode_text     = 1;
+static const uint8_t websocket_opcode_binary   = 2;
+static const uint8_t websocket_opcode_close    = 8;
+static const uint8_t websocket_opcode_ping     = 9;
+static const uint8_t websocket_opcode_pong     = 10;
+
+struct websocket
+{
+    bool server = false;
+    bool mask = false;
+    bool sized = false;
+    bool finish = false;
+    uint32_t key = 0;
+    uint32_t size = 0;
+    string close_reason;
+    uint8_t opcode = 0xff;
+    vector<uint8_t> cache;
+    vector<uint8_t> frame;
+    uint8_t frames_opcode = 0;
+    vector<uint8_t> frames;
+};
+
+void websocket_on_recv_frame(int fd, uint8_t* frame, uint32_t size, bool binary)
+{
+    if (!binary)
+    {
+        string text((char*)frame, size);
+        cout << text << endl;
+    }
+}
+
+void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
+{
+    static shared_ptr<websocket> d = make_shared<websocket>();
+
+    uint32_t offset = 0;
+
+    while(offset < size)
+    {
+        if (offset < size && d->opcode == 0xff && !d->sized)
+        {
+            uint8_t x = *(bytes + offset);
+            d->finish = x & 0x80;
+            d->opcode = x & 0x7f;
+            offset += sizeof(uint8_t);
+            continue;
+        }
+
+        if (d->opcode != websocket_opcode_continue && d->opcode != websocket_opcode_text && d->opcode != websocket_opcode_binary && d->opcode != websocket_opcode_close && d->opcode != websocket_opcode_ping && d->opcode != websocket_opcode_pong)
+        {
+            d->close_reason = "websocket unknown opcode " + to_string(d->opcode);
+            tcp_close(socket);
+            return;
+        }
+
+        if (offset < size && d->size == 0 && !d->sized)
+        {
+            uint8_t x = *(bytes + offset);
+            d->mask = x & 0x80;
+            d->size = x & 0x7f;
+            d->sized = d->size <= 125;
+            offset += sizeof(uint8_t);
+            continue;
+        }
+
+        if (offset < size && d->size == 126 && !d->sized)
+        {
+            uint16_t x = 0;
+            d->sized = websocket_cache(2, (uint8_t*)&x, bytes, offset, size, d->cache);
+            if (d->sized) d->size = endian16(x);
+            continue;
+        }
+
+        if (offset < size && d->size == 127 && !d->sized)
+        {
+            uint64_t x = 0;
+            d->sized = websocket_cache(8, (uint8_t*)&x, bytes, offset, size, d->cache);
+            if (d->sized) d->size = (uint32_t)endian64(x);
+            continue;
+        }
+
+        if (d->server && d->sized && !d->mask)
+        {
+            d->close_reason = "websocket no mask";
+            tcp_close(socket);
+            return;
+        }
+
+        if (offset < size && d->server && d->sized && d->mask && d->key == 0)
+        {
+            uint32_t x = 0;
+            if (websocket_cache(4, (uint8_t*)&x, bytes, offset, size, d->cache))
+            {
+                d->key = x;
+            }
+            else
+            {
+                continue;
+            }
+        }
+
+        if (offset < size && d->sized && d->size > 0 && d->frame.size() < d->size)
+        {
+            d->frame.push_back(*(bytes + offset));
+            offset += sizeof(uint8_t);
+        }
+
+        if (d->sized && d->size == d->frame.size())
+        {
+            websocket_recv_frame++;
+
+            if (!d->finish && (d->opcode == websocket_opcode_text || d->opcode == websocket_opcode_binary))
+            {
+                websocket_mask(d->key, d->frame.data(), d->frame.size());
+                d->frames_opcode = d->opcode;
+                for(auto i : d->frame) d->frames.push_back(i);
+            }
+
+            if (d->opcode == websocket_opcode_continue)
+            {
+                websocket_mask(d->key, d->frame.data(), d->frame.size());
+                for(auto i : d->frame) d->frames.push_back(i);
+                if (d->finish)
+                {
+                    websocket_on_recv_frame(fd, d->frames.data(), (uint32_t)d->frames.size(), d->frames_opcode == websocket_opcode_binary);
+                    d->frames_opcode = 0;
+                    d->frames.clear();
+                }
+            }
+
+            if (d->finish && (d->opcode == websocket_opcode_text || d->opcode == websocket_opcode_binary))
+            {
+                websocket_mask(d->key, d->frame.data(), d->frame.size());
+                websocket_on_recv_frame(fd, d->frames.data(), (uint32_t)d->frames.size(), d->frames_opcode == websocket_opcode_binary);
+            }
+
+            if (d->opcode == websocket_opcode_ping)
+            {
+                websocket_send_frame++;
+                if (!d->finish || d->frame.size() > 125)
+                {
+                    if (d->frame.size() > 125) d->close_reason = "websocket too big ping frame";
+                    if (!d->finish) d->close_reason = "websocket not finish ping frame";
+                    tcp_close(socket);
+                    return;
+                }
+                websocket_mask(d->key, d->frame.data(), d->frame.size());
+                websocket_send(socket, d->frame.data(), d->frame.size(), websocket_opcode_pong, true);
+            }
+
+            if (d->opcode == websocket_opcode_pong)
+            {
+            }
+
+            if (d->opcode == websocket_opcode_close)
+            {
+                if (d->opcode == websocket_opcode_close) d->close_reason = "websocket close frame";
+                tcp_close(socket);
+                return;
+            }
+
+            d->key = 0; d->size = 0; d->opcode = 0xff; d->finish = false; d->mask = false; d->sized = false; d->frame.clear();
+        }
+    }
+}
 
 int main()
 {
@@ -59,11 +227,7 @@ int main()
     {
         int recv_size = SSL_read(ssl, buff.data(), buff.size());
         if (recv_size <= 0) break;
-        cout << "recv " << recv_size << endl;
-
-        string respone((char*)buff.data(), recv_size);
-
-        cout << respone << endl;
+        websocket_on_tcp_recved(buff.data(), buff.size());
     }
 
     tcp_close(fd);
