@@ -20,7 +20,7 @@ struct openssl_context
     {
         SSL_load_error_strings();
         OpenSSL_add_ssl_algorithms();
-        ctx = SSL_CTX_new(TLS_client_method());
+        ctx = SSL_CTX_new(DTLS_client_method());
     }
 
     ~openssl_context()
