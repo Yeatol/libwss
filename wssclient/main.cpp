@@ -290,7 +290,17 @@ int main()
         }
         if (recv_size > 0)
         {
-            websocket_on_tcp_recved(fd, buff.data(), recv_size);
+            static bool upgrade = false;
+            if (upgrade)
+            {
+                websocket_on_tcp_recved(fd, buff.data(), recv_size);
+            }
+            else
+            {
+                string http_respone((char*)buff.data(), recv_size);
+                cout << http_respone << endl;
+                upgrade = true;
+            }
         }
     }
 
