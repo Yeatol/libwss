@@ -30,7 +30,12 @@ int main()
 	SSL_load_error_strings(); 
 	SSLeay_add_ssl_algorithms();
 	ERR_load_BIO_strings();
-	SSL_CTX* ctx = SSL_CTX_new(SSLv23_client_method());
+	SSL_CTX* ctx = SSL_CTX_new(SSLv1_2_client_method());
+
+	if (ctx == nullptr)
+    {
+        cout << "SSL_CTX_new falied" << endl;
+    }
 
     SSL* ssl = SSL_new(ctx);
     SSL_set_fd(ssl, fd);
