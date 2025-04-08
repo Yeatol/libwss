@@ -17,6 +17,7 @@
 #include <sys/socket.h>
 #include <sys/syscall.h>
 
+#include <time.h>
 #include <fcntl.h>
 #include <netdb.h>
 #include <limits.h>
@@ -355,6 +356,9 @@ int main()
         {
             if (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK)
             {
+                //usleep(1);
+                timespec delay = {0, 100};
+                nanosleep(&delay, nullptr);
                 continue;
             }
         }
