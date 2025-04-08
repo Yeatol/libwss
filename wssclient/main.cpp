@@ -12,34 +12,6 @@
 
 using namespace std;
 
-void init_openssl()
-{
-    SSL_load_error_strings();
-    OpenSSL_add_ssl_algorithms();
-}
-
-void cleanup_openssl()
-{
-    EVP_cleanup();
-}
-
-SSL_CTX* create_context()
-{
-    const SSL_METHOD* method;
-    SSL_CTX* ctx;
-
-    method = DTLS_client_method();
-    ctx = SSL_CTX_new(method);
-    if (!ctx)
-    {
-        perror("Unable to create SSL context");
-        ERR_print_errors_fp(stderr);
-        exit(EXIT_FAILURE);
-    }
-
-    return ctx;
-}
-
 int main()
 {
     string   host = "testnet.binance.vision";
@@ -54,8 +26,12 @@ int main()
 
     cout << "tcp_connect " << connect_code << endl;
 
-    init_openssl();
-    SSL_CTX* ctx = create_context();
+	OpenSSL_add_ssl_algorithms();
+	SSL_load_error_strings(); 
+	SSLeay_add_ssl_algorithms();
+	ERR_load_BIO_strings();
+	SSL_CTX* ctx = SSL_CTX_new(SSLv23_client_method());
+
     SSL* ssl = SSL_new(ctx);
     SSL_set_fd(ssl, fd);
 
@@ -66,8 +42,7 @@ int main()
         tcp_close(fd);
         SSL_free(ssl);
         SSL_CTX_free(ctx);
-        cleanup_openssl();
-        exit(EXIT_FAILURE);
+        EVP_cleanup();
     }
 
     cout << "SSL_connect " << ssl_code << endl;
