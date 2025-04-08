@@ -54,20 +54,18 @@ struct websocket
 
 void websocket_on_recv_frame(int fd, uint8_t* frame, uint32_t size, bool binary)
 {
+    auto tp = system_clock::now();
+    auto ms = duration_cast<microseconds>(tp.time_since_epoch()).count();
+
     if (!binary)
     {
         string text((char*)frame, size);
-
-        auto tp = system_clock::now();
-        auto ms = duration_cast<microseconds>(tp.time_since_epoch()).count();
-
         json object = json::parse(text);
 
         uint64_t id = (uint64_t)object["data"]["u"].number_value();
         
         string line = "updateId=" + to_string(id)  + "    cpp_recvTimeUs=" + to_string(ms);
 
-        //cout << line << endl;
         log(line);
     }
 }
