@@ -22,7 +22,7 @@ int main()
 
     string http_upgrade = websocket_upgrade(host, uri, websocket_key);
 
-    tcp_send(fd, http_upgrade.c_str(), http_upgrade.size());
+    tcp_send(fd, (uint8_t*)http_upgrade.c_str(), http_upgrade.size());
     
     vector<uint8_t> buff(1024 * 1024);
 
