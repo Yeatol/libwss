@@ -45,7 +45,7 @@ int main()
     uint16_t port = 443;
     string   uri  = "/stream?streams=btcusdt@trade&timeUnit=MICROSECOND";
 
-    string websocket_key = "dGhlIHNhbXBsZSBub25jZQ==";
+    string websocket_key = "ZDjAIhP1CSBvruG9uw820A==";
 
     int fd = tcp_open(0, 0);
     
@@ -57,6 +57,10 @@ int main()
     SSL_set_fd(ssl, fd);
 
     int ssl_code = SSL_connect(ssl);
+    if (ssl_code <= 0)
+    {
+        ERR_print_errors_fp(stdout);
+    }
 
     cout << "SSL_connect " << ssl_code << endl;
 
