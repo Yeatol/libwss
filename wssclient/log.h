@@ -6,7 +6,7 @@ using namespace std;
 
 string log_time();
 
-void   log_flush();
+void   log_flush(string filename);
 
 string log_tail();
 

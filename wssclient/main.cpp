@@ -247,7 +247,7 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
 int main()
 {
     async_task_interval([]() {
-        log_flush();
+        log_flush("debug.log");
     }, 1000ms);
 
     // openssl s_client -connect testnet.binance.vision:443
