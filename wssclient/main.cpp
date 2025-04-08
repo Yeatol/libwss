@@ -344,8 +344,8 @@ int main()
     cout << "send " << send_size << endl;
     
 
-    int busypoll = 50;
-    setsockopt(fd, SOL_SOCKET, SO_BUSY_POLL, &busypoll, sizeof(int));
+    //int busypoll = 50;
+    //setsockopt(fd, SOL_SOCKET, SO_BUSY_POLL, &busypoll, sizeof(int));
 
     fcntl(fd, F_SETFL, O_NONBLOCK);
 
@@ -358,7 +358,7 @@ int main()
         {
             if (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK)
             {
-                //usleep(0);
+                usleep(0);
                 //timespec delay = {0, 0};
                 //nanosleep(&delay, nullptr);
                 continue;
