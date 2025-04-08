@@ -4,7 +4,7 @@ complie := g++
 symbols := strip
 depends := ldd -r
 binarys := ../bin/$(notdir $(shell pwd))
-ccflags := -g -std=c++17 -pthread -lssl -lcrypto -static-libstdc++ -static-libgcc -lstdc++fs -Wl,--as-needed -Wall -Wno-unused-variable -Wno-unused-function -Wno-unused-value
+ccflags := -g -std=c++17 -pthread -lssl -lcrypto -lstdc++fs -Wl,--as-needed -Wall -Wno-unused-variable -Wno-unused-function -Wno-unused-value
 
 sources := .
 
