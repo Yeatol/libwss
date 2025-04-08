@@ -36,6 +36,10 @@ int main()
         int recv_size = tcp_recv(fd, buff.data(), buff.size());
 
         cout << "tcp_recv " << recv_size << endl;
+
+        string respone((char*)buff.data(), recv_size);
+
+        cout << respone << endl;
     }
 
     return 0;
