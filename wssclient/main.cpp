@@ -231,7 +231,8 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
 int main()
 {
     // openssl s_client -connect testnet.binance.vision:443
-    string   host = "testnet.binance.vision";
+    //string   host = "testnet.binance.vision";
+    string   host = "stream.binance.com";
     uint16_t port = 443;
     string   uri  = "/stream?streams=btcusdt@trade&timeUnit=MICROSECOND";
 
