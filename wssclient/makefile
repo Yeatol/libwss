@@ -9,6 +9,7 @@ ccflags := -O3 -std=c++17 -pthread -static -static-libstdc++ -static-libgcc -lst
 sources := .
 
 all.hpp := $(foreach d, $(sources), $(foreach i, $(shell find $(d) -type d), $(wildcard $(i)/*.h)))
+all.cpp := $(foreach d, $(sources), $(foreach i, $(shell find $(d) -type d), $(wildcard $(i)/*.c)))
 all.cpp := $(foreach d, $(sources), $(foreach i, $(shell find $(d) -type d), $(wildcard $(i)/*.cpp)))
 
 $(binarys): $(all.hpp) $(all.cpp)
