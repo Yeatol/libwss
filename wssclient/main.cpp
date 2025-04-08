@@ -42,7 +42,8 @@ int main()
     SSL_set_fd(ssl, fd);
     SSL_set_tlsext_host_name(ssl, host.c_str());
 
-    int ssl_code = SSL_connect(ssl);
+    SSL_set_connect_state(ssl);
+    int ssl_code = SSL_do_handshake(ssl);
     if (ssl_code <= 0)
     {
         ERR_print_errors_fp(stderr);
