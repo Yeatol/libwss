@@ -58,8 +58,8 @@ void websocket_on_recv_frame(int fd, uint8_t* frame, uint32_t size, bool binary)
         
         string line = "recvTimeUs=" + to_string(ms) + "    updateId=" + to_string(id);
 
-        cout << line << endl;
-        //log(line);
+        //cout << line << endl;
+        log(line);
     }
 }
 
@@ -246,6 +246,10 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
 
 int main()
 {
+    async_task_interval([]() {
+        log_flush();
+    }, 1000ms);
+
     // openssl s_client -connect testnet.binance.vision:443
     //string   host = "testnet.binance.vision";
     string   host = "stream.binance.com";
