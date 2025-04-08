@@ -20,7 +20,7 @@ struct openssl_context
     {
         SSL_load_error_strings();
         OpenSSL_add_ssl_algorithms();
-        ctx = SSL_CTX_new(DTLS_client_method());
+        ctx = SSL_CTX_new(TLS_client_method());
     }
 
     ~openssl_context()
@@ -57,10 +57,6 @@ int main()
     SSL_set_fd(ssl, fd);
 
     int ssl_code = SSL_connect(ssl);
-    if (ssl_code <= 0)
-    {
-        cout << SSL_get_error(ssl, ssl_code) << endl;
-    }
 
     cout << "SSL_connect " << ssl_code << endl;
 
