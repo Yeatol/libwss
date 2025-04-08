@@ -2,6 +2,7 @@
 
 #include <map>
 #include <mutex>
+#include <string>
 #include <thread>
 #include <chrono>
 #include <functional>
