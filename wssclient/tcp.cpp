@@ -18,7 +18,7 @@ int tcp_open(uint32_t ip, uint16_t port)
 {
     int fd = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, IPPROTO_TCP);
     if (fd == -1) return -1;
-    int nodelay   = 1; int reuseaddr = 1; int reuseport = 1;  int rcvbuf = 1024 * 1024 * 32; int rcvlowat = 128;
+    int nodelay   = 1; int reuseaddr = 1; int reuseport = 1;  int rcvbuf = 1024 * 1024 * 32; int rcvlowat = 1024;
     int keepalive = 1; int keepcnt   = 3; int keepidle  = 60; int keepintvl = 30;
     if (setsockopt(fd, SOL_SOCKET, SO_RCVBUF,     &rcvbuf,    sizeof(int)) == -1 ||
         setsockopt(fd, SOL_SOCKET, SO_RCVLOWAT,   &rcvlowat,  sizeof(int)) == -1 ||
