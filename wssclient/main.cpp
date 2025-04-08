@@ -56,7 +56,7 @@ void websocket_on_recv_frame(int fd, uint8_t* frame, uint32_t size, bool binary)
 
         uint64_t id = (uint64_t)object["data"]["u"].number_value();
         
-        string line = "recvTimeUs=" + to_string(ms) + "    updateId=" + to_string(id);
+        string line = "cpp_recvTimeUs=" + to_string(ms) + "    updateId=" + to_string(id);
 
         //cout << line << endl;
         log(line);
