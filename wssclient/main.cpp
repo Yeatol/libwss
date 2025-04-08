@@ -50,17 +50,15 @@ int main()
 
     string http_upgrade = websocket_upgrade(host, uri, websocket_key);
 
-    //int send_size = tcp_send(fd, (uint8_t*)http_upgrade.c_str(), http_upgrade.size());
     int send_size = SSL_write(ssl, http_upgrade.c_str(), http_upgrade.size());
     cout << "send " << send_size << endl;
     
     vector<uint8_t> buff(1024 * 1024);
 
-    //while(true)
+    while(true)
     {
-        //int recv_size = tcp_recv(fd, buff.data(), buff.size());
-        //cout << "tcp_recv " << recv_size << endl;
         int recv_size = SSL_read(ssl, buff.data(), buff.size());
+        if (recv_size <= 0) break;
         cout << "recv " << recv_size << endl;
 
         string respone((char*)buff.data(), recv_size);
