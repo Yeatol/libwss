@@ -36,6 +36,8 @@ int main()
         cout << "SSL_CTX_new falied" << endl;
     }
 
+    SSL_CTX_set_verify(ctx, SSL_VERIFY_NONE, NULL);
+
     SSL* ssl = SSL_new(ctx);
     SSL_set_fd(ssl, fd);
     SSL_set_tlsext_host_name(ssl, host.c_str());
@@ -48,6 +50,7 @@ int main()
         SSL_free(ssl);
         SSL_CTX_free(ctx);
         EVP_cleanup();
+        return -1;
     }
 
     cout << "SSL_connect " << ssl_code << endl;
