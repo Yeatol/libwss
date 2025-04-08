@@ -308,7 +308,7 @@ int main()
     
     int connect_code = tcp_connect(fd, host.c_str(), port);
 
-    cout << "tcp_connect " << connect_code << endl;
+    cout << "TCP_connect " << connect_code << endl;
 
     SSL_load_error_strings();
     OpenSSL_add_ssl_algorithms();
@@ -340,7 +340,7 @@ int main()
     string http_upgrade = websocket_upgrade(host, uri, websocket_key);
 
     SSL_write(ssl, http_upgrade.c_str(), http_upgrade.size());
-    cout << http_upgrade << endl;
+    cout << endl << http_upgrade << endl;
     
 
     //int busypoll = 50;
