@@ -275,6 +275,7 @@ void set_thread_affinity(int cpuid)
     CPU_ZERO(&mask);
     CPU_SET(cpuid, &mask);
     sched_setaffinity(0, sizeof(cpu_set_t), &mask);
+    cout << "set_thread_affinity " << cpuid << endl;
 }
 
 void set_socket_affinity(int cpuid, int fd)
@@ -282,6 +283,7 @@ void set_socket_affinity(int cpuid, int fd)
 #include <linux/version.h>
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(4,4,0)
     setsockopt(fd, SOL_SOCKET, SO_INCOMING_CPU, &cpuid, sizeof(cpuid));
+    cout << "set_socket_affinity " << cpuid << endl;
 #endif
 }
 
