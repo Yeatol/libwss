@@ -12,31 +12,31 @@
 
 using namespace std;
 
-struct openssl_context
+void init_openssl()
 {
-    SSL_CTX* ctx = nullptr;
+    SSL_load_error_strings();
+    OpenSSL_add_ssl_algorithms();
+}
 
-    openssl_context()
-    {
-        SSL_load_error_strings();
-        OpenSSL_add_ssl_algorithms();
-        ctx = SSL_CTX_new(DTLS_client_method());
-    }
-
-    ~openssl_context()
-    {
-        EVP_cleanup();
-    }
-};
-
-shared_ptr<openssl_context> shared_context()
+void cleanup_openssl()
 {
-    static shared_ptr<openssl_context> context;
-    if (!context)
-    {
-        context = make_shared<openssl_context>();
+    EVP_cleanup();
+}
+
+SSL_CTX* create_context()
+{
+    const SSL_METHOD* method;
+    SSL_CTX* ctx;
+
+    method = TLS_client_method();
+    ctx = SSL_CTX_new(method);
+    if (!ctx) {
+        perror("Unable to create SSL context");
+        ERR_print_errors_fp(stderr);
+        exit(EXIT_FAILURE);
     }
-    return context;
+
+    return ctx;
 }
 
 int main()
@@ -53,18 +53,29 @@ int main()
 
     cout << "tcp_connect " << connect_code << endl;
 
-    SSL* ssl = SSL_new(shared_context()->ctx);
+    init_openssl();
+    SSL_CTX* ctx = create_context();
+    SSL* ssl = SSL_new(ctx);
     SSL_set_fd(ssl, fd);
 
     int ssl_code = SSL_connect(ssl);
+    if (ssl_code <= 0)
+    {
+        ERR_print_errors_fp(stderr);
+        close(socket_fd);
+        SSL_free(ssl);
+        SSL_CTX_free(ctx);
+        cleanup_openssl();
+        exit(EXIT_FAILURE);
+    }
 
     cout << "SSL_connect " << ssl_code << endl;
 
-    //string http_upgrade = websocket_upgrade(host, uri, websocket_key);
+    string http_upgrade = websocket_upgrade(host, uri, websocket_key);
 
-    //int send_size = tcp_send(fd, (uint8_t*)http_upgrade.c_str(), http_upgrade.size());
+    int send_size = tcp_send(fd, (uint8_t*)http_upgrade.c_str(), http_upgrade.size());
 
-    //cout << "tcp_send " << send_size << endl;
+    cout << "tcp_send " << send_size << endl;
     
     vector<uint8_t> buff(1024 * 1024);
 
