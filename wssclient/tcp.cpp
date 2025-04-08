@@ -21,7 +21,7 @@ int tcp_open(uint32_t ip, uint16_t port)
     int nodelay   = 1; int reuseaddr = 1; int reuseport = 1;  int rcvbuf = 1024 * 1024 * 32; int rcvlowat = 1;
     int keepalive = 1; int keepcnt   = 3; int keepidle  = 60; int keepintvl = 30;
     if (setsockopt(fd, SOL_SOCKET, SO_RCVBUF,     &rcvbuf,    sizeof(int)) == -1 ||
-        setsockopt(fd, SOL_SOCKET, SO_RCVLOWAT,   &rcvlowat,  sizeof(int)) == -1 ||
+        //setsockopt(fd, SOL_SOCKET, SO_RCVLOWAT,   &rcvlowat,  sizeof(int)) == -1 ||
         setsockopt(fd, SOL_SOCKET, SO_REUSEADDR,  &reuseaddr, sizeof(int)) == -1 ||
         setsockopt(fd, SOL_SOCKET, SO_REUSEPORT,  &reuseport, sizeof(int)) == -1 ||
         setsockopt(fd, SOL_SOCKET, SO_KEEPALIVE,  &keepalive, sizeof(int)) == -1 ||
