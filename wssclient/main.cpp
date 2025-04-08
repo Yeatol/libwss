@@ -17,6 +17,13 @@
 #include <sys/socket.h>
 #include <sys/syscall.h>
 
+#include <netdb.h>
+#include <limits.h>
+#include <arpa/inet.h>
+#include <sys/uio.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+
 #include <string>
 #include <vector>
 #include <memory>
@@ -286,6 +293,14 @@ int main()
     string websocket_key = "ZDjAIhP1CSBvruG9uw820A==";
 
     int fd = tcp_open(0, 0);
+
+    int rcvlowat = 0;
+    int rcvlowat_len = sizeof(int);
+    int ret = getsockopt(fd, SOL_SOCKET, SO_RCVLOWAT, &rcvlowat, &rcvlowat_len);
+    if (ret != -1)
+    {
+        cout << "rcvlowat " << rcvlowat << endl;
+    }
     
     set_thread_affinity(0);
     set_socket_affinity(0, fd);
