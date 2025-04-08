@@ -341,10 +341,10 @@ int main()
             static bool upgrade = false;
             if (upgrade)
             {
-                auto tp = system_clock::now();
-                auto ms = duration_cast<microseconds>(tp.time_since_epoch()).count();
-                string line = "                         SSL_read_time=" + to_string(ms);
-                log(line);
+                //auto tp = system_clock::now();
+                //auto ms = duration_cast<microseconds>(tp.time_since_epoch()).count();
+                //string line = "                         SSL_read_time=" + to_string(ms);
+                //log(line);
                 websocket_on_tcp_recved(fd, buff.data(), recv_size);
             }
             else
