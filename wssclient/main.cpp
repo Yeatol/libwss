@@ -50,9 +50,9 @@ void websocket_on_recv_frame(int fd, uint8_t* frame, uint32_t size, bool binary)
 
         json object = json::parse(text);
 
-        double event_time = object["data"]["E"].number_value();
-
-        cout << ms << " | " << text << " | " << ms - event_time << " microsecond" << endl;
+        string id = object["data"]["u"].to_string();
+        
+        cout << "recvTimeUs=" << ms << "    updateId=" << id  << " " << text << endl;
     }
 }
 
