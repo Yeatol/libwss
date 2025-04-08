@@ -74,12 +74,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\core\asio.cpp" />
     <ClCompile Include="..\wssclient\http.cpp" />
     <ClCompile Include="..\wssclient\main.cpp" />
     <ClCompile Include="..\wssclient\tcp.cpp" />
     <ClCompile Include="..\wssclient\websocket.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\core\asio.h" />
     <ClInclude Include="..\wssclient\http.h" />
     <ClInclude Include="..\wssclient\tcp.h" />
     <ClInclude Include="..\wssclient\websocket.h" />

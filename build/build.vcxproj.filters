@@ -5,10 +5,21 @@
     <ClCompile Include="..\wssclient\main.cpp" />
     <ClCompile Include="..\wssclient\tcp.cpp" />
     <ClCompile Include="..\wssclient\websocket.cpp" />
+    <ClCompile Include="..\core\asio.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\wssclient\http.h" />
     <ClInclude Include="..\wssclient\tcp.h" />
     <ClInclude Include="..\wssclient\websocket.h" />
+    <ClInclude Include="..\core\asio.h">
+      <Filter>core</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="core">
+      <UniqueIdentifier>{cbb82c15-04e0-438f-b71e-e6a1d091ea2f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

@@ -1,5 +1,4 @@
 #include "asio.h"
-#include "../../p2p_core/p2p_log.h"
 
 static shared_ptr<asio::io_context> shared_io_context()
 {
@@ -42,9 +41,6 @@ static void udp_async_recv(
             uint16_t port = address->port();
             if (recved)
             {
-//#ifdef DEBUG
-                log("udp_recv(" + ip_to_string(ip) + ", " + to_string(port) + ", " + to_string(size) + ")");
-//#endif
                 recved(socket, ip, port, buffer->data(), (uint32_t)size);
             }
         }
@@ -158,9 +154,6 @@ uint32_t udp_send(udp socket, const void* data, uint32_t size)
 {
     try
     {
-//#ifdef DEBUG
-        log("udp_send(" + to_string(size) + ")");
-//#endif
         return (uint32_t)socket->send(asio::mutable_buffer((char*)data, size));
     }
     catch (...)
@@ -173,9 +166,6 @@ uint32_t udp_send(udp socket, uint32_t ip, uint16_t port, const void* data, uint
 {
     try
     {
-//#ifdef DEBUG
-        log("udp_send(" + ip_to_string(ip) + ", " + to_string(port) + ", " + to_string(size) + ")");
-//#endif
         asio::ip::udp::endpoint target(asio::ip::address_v4(ip), port);
         return (uint32_t)socket->send_to(asio::mutable_buffer((char*)data, size), target);
     }
@@ -189,9 +179,6 @@ uint32_t udp_send(udp socket, uint32_t ip, uint16_t port, const void* head, uint
 {
     try
     {
-//#ifdef DEBUG
-        log("udp_send(" + ip_to_string(ip) + ", " + to_string(port) + ", " + to_string(body_size) + ")");
-//#endif
         vector<char> msg(head_size + body_size);
         memcpy(msg.data(), head, head_size);
         memcpy(msg.data() + head_size, body, body_size);
