@@ -18,17 +18,21 @@ int main()
 
     int fd = tcp_open(0, 0);
     
-    tcp_connect(fd, host.c_str(), port);
+    int connect_code = tcp_connect(fd, host.c_str(), port);
+
+    cout << "tcp_connect " << connect_code << endl;
 
     string http_upgrade = websocket_upgrade(host, uri, websocket_key);
 
-    tcp_send(fd, (uint8_t*)http_upgrade.c_str(), http_upgrade.size());
+    int send_size = tcp_send(fd, (uint8_t*)http_upgrade.c_str(), http_upgrade.size());
+
+    cout << "tcp_send " << send_size << endl;
     
     vector<uint8_t> buff(1024 * 1024);
 
-    int size = tcp_recv(fd, buff.data(), buff.size());
+    int recv_size = tcp_recv(fd, buff.data(), buff.size());
 
-    cout << size << endl;
+    cout << recv_size << endl;
 
     return 0;
 }
