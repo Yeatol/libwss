@@ -196,7 +196,7 @@ void websocket_on_tcp_recved(int fd, uint8_t* bytes, uint32_t size)
             if (d->finish && (d->opcode == websocket_opcode_text || d->opcode == websocket_opcode_binary))
             {
                 websocket_mask(d->key, d->frame.data(), d->frame.size());
-                websocket_on_recv_frame(fd, d->frames.data(), (uint32_t)d->frames.size(), d->frames_opcode == websocket_opcode_binary);
+                websocket_on_recv_frame(fd, d->frame.data(), (uint32_t)d->frame.size(), d->frames_opcode == websocket_opcode_binary);
             }
 
             if (d->opcode == websocket_opcode_ping)
