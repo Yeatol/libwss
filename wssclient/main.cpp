@@ -17,6 +17,7 @@
 #include <sys/socket.h>
 #include <sys/syscall.h>
 
+#include <fcntl.h>
 #include <netdb.h>
 #include <limits.h>
 #include <arpa/inet.h>
@@ -334,6 +335,9 @@ int main()
     int send_size = SSL_write(ssl, http_upgrade.c_str(), http_upgrade.size());
     cout << "send " << send_size << endl;
     
+    int ret = fcntl(fd, F_SETFL, O_NONBLOCK);
+    cout << "fcntl " << ret << endl;
+
     vector<uint8_t> buff(1024 * 1024 * 4);
 
     while(true)
