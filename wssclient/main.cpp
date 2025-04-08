@@ -10,7 +10,7 @@ using namespace std;
 
 int main()
 {
-    string   host = "stream.binance.com";
+    string   host = "testnet.binance.vision";
     uint16_t port = 443;
     string   uri  = "/stream?streams=btcusdt@trade&timeUnit=MICROSECOND";
 
