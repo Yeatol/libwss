@@ -16,8 +16,8 @@ using namespace std;
 
 int tcp_open(uint32_t ip, uint16_t port)
 {
-    //int fd = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, IPPROTO_TCP);
-    int fd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
+    int fd = socket(AF_INET, SOCK_STREAM | SOCK_CLOEXEC, IPPROTO_TCP);
+    //int fd = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK | SOCK_CLOEXEC, IPPROTO_TCP);
     if (fd == -1) return -1;
     int nodelay   = 1; int reuseaddr = 1; int reuseport = 1;  int rcvbuf = 1024 * 1024 * 4; int rcvlowat = 1;
     int keepalive = 1; int keepcnt   = 3; int keepidle  = 60; int keepintvl = 30;
