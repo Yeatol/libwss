@@ -359,8 +359,8 @@ int main()
             if (errno == EINTR || errno == EAGAIN || errno == EWOULDBLOCK)
             {
                 //usleep(0);
-                timespec delay = {0, 0};
-                nanosleep(&delay, nullptr);
+                //timespec delay = {0, 0};
+                //nanosleep(&delay, nullptr);
                 continue;
             }
         }
