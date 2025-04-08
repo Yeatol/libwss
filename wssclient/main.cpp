@@ -290,6 +290,7 @@ void set_socket_affinity(int cpuid, int fd)
 int main()
 {
     async_task_interval([]() {
+        set_thread_affinity(1);
         log_flush();
     }, 1000ms);
     
