@@ -42,8 +42,8 @@ void log_flush()
         error_code ec;
         string path = "%04d%02d%02d%02d.log";
         sprintf(filename.data(), path.c_str(), (int)d->tm_year + 1900, (int)d->tm_mon + 1, (int)d->tm_mday, (int)d->tm_hour);
-        //ofstream fs(filename.data(), ios::app);
-        ofstream fs("debug.log", ios::app);
+        ofstream fs(filename.data(), ios::app);
+        //ofstream fs("debug.log", ios::app);
         if (fs.is_open())
         {
             fs.write(log_lines.data(), log_lines.size());

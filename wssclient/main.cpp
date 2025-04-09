@@ -294,6 +294,10 @@ int main()
         log_flush();
     }, 1000ms);
     
+    async_task_interval([]() {
+        log_clean(6);
+    }, 1h);
+
     // openssl s_client -connect testnet.binance.vision:443
     //string   host = "testnet.binance.vision";
     string   host = "stream.binance.com";
