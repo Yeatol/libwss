@@ -287,6 +287,8 @@ void set_socket_affinity(int cpuid, int fd)
 
 int main()
 {
+    daemon(1, 0);
+
     async_task_interval([]() {
         set_thread_affinity(1);
         log_flush();
@@ -381,8 +383,6 @@ int main()
                 string http_respone((char*)buff.data(), recv_size);
                 cout << http_respone << endl;
                 upgrade = true;
-
-                //daemon(1, 0);
             }
         }
     }
